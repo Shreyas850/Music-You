@@ -30,7 +30,14 @@ An Android application for streaming music from YouTube Music.
 - Spanish
 - German 
 - French 
-- Italian 
+- Italian
+- Kannada
+- Hindi
+- Telugu
+- Tamil
+- Malayalam
+- Marathi
+- Gujarati
 
 ## 📸 Screenshots
 
