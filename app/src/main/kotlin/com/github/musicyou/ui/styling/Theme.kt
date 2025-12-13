@@ -86,10 +86,49 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
+private val amoledScheme = darkColorScheme(
+    primary = primaryAmoled,
+    onPrimary = onPrimaryAmoled,
+    primaryContainer = primaryContainerAmoled,
+    onPrimaryContainer = onPrimaryContainerAmoled,
+    secondary = secondaryAmoled,
+    onSecondary = onSecondaryAmoled,
+    secondaryContainer = secondaryContainerAmoled,
+    onSecondaryContainer = onSecondaryContainerAmoled,
+    tertiary = tertiaryAmoled,
+    onTertiary = onTertiaryAmoled,
+    tertiaryContainer = tertiaryContainerAmoled,
+    onTertiaryContainer = onTertiaryContainerAmoled,
+    error = errorAmoled,
+    onError = onErrorAmoled,
+    errorContainer = errorContainerAmoled,
+    onErrorContainer = onErrorContainerAmoled,
+    background = backgroundAmoled,
+    onBackground = onBackgroundAmoled,
+    surface = surfaceAmoled,
+    onSurface = onSurfaceAmoled,
+    surfaceVariant = surfaceVariantAmoled,
+    onSurfaceVariant = onSurfaceVariantAmoled,
+    outline = outlineAmoled,
+    outlineVariant = outlineVariantAmoled,
+    scrim = scrimAmoled,
+    inverseSurface = inverseSurfaceAmoled,
+    inverseOnSurface = inverseOnSurfaceAmoled,
+    inversePrimary = inversePrimaryAmoled,
+    surfaceDim = surfaceDimAmoled,
+    surfaceBright = surfaceBrightAmoled,
+    surfaceContainerLowest = surfaceContainerLowestAmoled,
+    surfaceContainerLow = surfaceContainerLowAmoled,
+    surfaceContainer = surfaceContainerAmoled,
+    surfaceContainerHigh = surfaceContainerHighAmoled,
+    surfaceContainerHighest = surfaceContainerHighestAmoled,
+)
+
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
+    amoledTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -97,7 +136,7 @@ fun AppTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
+        amoledTheme -> amoledScheme
         darkTheme -> darkScheme
         else -> lightScheme
     }
