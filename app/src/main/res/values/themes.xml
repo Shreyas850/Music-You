@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.MusicYou" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.MusicYou" parent="Theme.Material3.DayNight.NoActionBar" />
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>

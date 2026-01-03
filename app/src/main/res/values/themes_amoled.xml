@@ -1,33 +1,3 @@
 <resources>
-    <style name="Theme.MusicYou.Amoled" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimaryAmoled</item>
-        <item name="colorOnPrimary">@color/colorOnPrimaryAmoled</item>
-        <item name="colorPrimaryContainer">@color/colorPrimaryContainerAmoled</item>
-        <item name="colorOnPrimaryContainer">@color/colorOnPrimaryContainerAmoled</item>
-        <item name="colorSecondary">@color/colorSecondaryAmoled</item>
-        <item name="colorOnSecondary">@color/colorOnSecondaryAmoled</item>
-        <item name="colorSecondaryContainer">@color/colorSecondaryContainerAmoled</item>
-        <item name="colorOnSecondaryContainer">@color/colorOnSecondaryContainerAmoled</item>
-        <item name="colorTertiary">@color/colorTertiaryAmoled</item>
-        <item name="colorOnTertiary">@color/colorOnTertiaryAmoled</item>
-        <item name="colorTertiaryContainer">@color/colorTertiaryContainerAmoled</item>
-        <item name="colorOnTertiaryContainer">@color/colorOnTertiaryContainerAmoled</item>
-        <item name="colorError">@color/colorErrorAmoled</item>
-        <item name="colorErrorContainer">@color/colorErrorContainerAmoled</item>
-        <item name="colorOnError">@color/colorOnErrorAmoled</item>
-        <item name="colorOnErrorContainer">@color/colorOnErrorContainerAmoled</item>
-        <item name="android:colorBackground">@color/colorBackgroundAmoled</item>
-        <item name="colorOnBackground">@color/colorOnBackgroundAmoled</item>
-        <item name="colorSurface">@color/colorSurfaceAmoled</item>
-        <item name="colorOnSurface">@color/colorOnSurfaceAmoled</item>
-        <item name="colorSurfaceVariant">@color/colorSurfaceVariantAmoled</item>
-        <item name="colorOnSurfaceVariant">@color/colorOnSurfaceVariantAmoled</item>
-        <item name="colorOutline">@color/colorOutlineAmoled</item>
-        <item name="colorOnSurfaceInverse">@color/colorInverseOnSurfaceAmoled</item>
-        <item name="colorSurfaceInverse">@color/colorInverseSurfaceAmoled</item>
-        <item name="colorPrimaryInverse">@color/colorInversePrimaryAmoled</item>
-        <item name="colorSurfaceTint">@color/colorSurfaceTintAmoled</item>
-        <item name="colorOutlineVariant">@color/colorOutlineVariantAmoled</item>
-        <item name="colorScrim">@color/colorScrimAmoled</item>
-    </style>
+    <style name="Theme.MusicYou.Amoled" parent="Theme.Material3.Dark.NoActionBar" />
 </resources>

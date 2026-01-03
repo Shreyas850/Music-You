@@ -23,8 +23,8 @@ android {
         applicationId = "com.github.musicyou"
         minSdk = 23
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.0.0"
+        versionCode = 14
+        versionName = "1.0.1"
     }
 
     splits {
@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.reorderable)
     implementation(libs.room)
     implementation(libs.swipe)
+    implementation(libs.material)
     ksp(libs.room.compiler)
     implementation(projects.github)
     implementation(projects.innertube)

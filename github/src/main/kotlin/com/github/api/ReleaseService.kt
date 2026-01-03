@@ -9,14 +9,18 @@ class ReleaseService(
     private val client: HttpClient
 ) {
     suspend fun getReleases(): List<Release> {
-        try {
-            val response =
+        return try {
+            client.get("https://api.github.com/repos/Shreyas850/Music-You/releases") {
+                header("X-GitHub-Api-Version", "2022-11-28")
+            }.body()
+        } catch (_: Exception) {
+            try {
                 client.get("https://api.github.com/repos/DanielSevillano/music-you/releases") {
                     header("X-GitHub-Api-Version", "2022-11-28")
-                }
-            return response.body()
-        } catch (_: Exception) {
-            return emptyList()
+                }.body()
+            } catch (_: Exception) {
+                emptyList()
+            }
         }
     }
 }
