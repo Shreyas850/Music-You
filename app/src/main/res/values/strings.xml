@@ -58,7 +58,7 @@
     <string name="pause_search_history_description">Neither save new searched queries nor show history</string>
     <string name="clear_search_history">Clear search history</string>
     <string name="android_auto_description">Enable Android Auto support</string>
-    <string name="android_auto_information">Remember to enable \"Unknown sources\" in the Developer Settings of Android Auto.</string>
+    <string name="android_auto_information">Remember to enable "Unknown sources" in the Developer Settings of Android Auto.</string>
     <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
     <string name="service_lifetime_description">When turning off battery optimizations is not enough</string>
     <string name="service_lifetime_information">If battery optimizations are applied, the playback notification can suddenly disappear when paused.</string>
@@ -195,4 +195,6 @@
     <string name="featured_on">Featured on</string>
     <string name="fans_might_also_like">Fans might also like</string>
     <string name="no_related_albums">No related albums were found</string>
+    <string name="amoled_theme" translatable="false">AMOLED Dark Theme</string>
+    <string name="use_amoled_theme" translatable="false">Use pure black colors on OLED displays</string>
 </resources>

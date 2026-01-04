@@ -9,10 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.AddLink
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import com.github.musicyou.LocalPlayerPadding
 import com.github.musicyou.R
 import com.github.musicyou.enums.NavigationLabelsVisibility
 import com.github.musicyou.enums.QuickPicksSource
+import com.github.musicyou.utils.amoledThemeKey
 import com.github.musicyou.utils.isAtLeastAndroid12
 import com.github.musicyou.utils.isAtLeastAndroid13
 import com.github.musicyou.utils.isShowingThumbnailInLockscreenKey
@@ -39,6 +41,7 @@ fun GeneralSettings() {
     val playerPadding = LocalPlayerPadding.current
 
     val context = LocalContext.current
+    var amoledTheme by rememberPreference(amoledThemeKey, false)
     var navigationLabelsVisibility by rememberPreference(
         navigationLabelsVisibilityKey,
         NavigationLabelsVisibility.Visible
@@ -55,20 +58,28 @@ fun GeneralSettings() {
             .verticalScroll(rememberScrollState())
             .padding(bottom = 16.dp + playerPadding)
     ) {
+        SwitchSettingEntry(
+            title = stringResource(id = R.string.amoled_theme),
+            text = stringResource(id = R.string.use_amoled_theme),
+            icon = Icons.Outlined.DarkMode,
+            isChecked = amoledTheme,
+            onCheckedChange = { amoledTheme = it }
+        )
+
         EnumValueSelectorSettingsEntry(
             title = stringResource(id = R.string.navigation_bar_label_visibility),
             selectedValue = navigationLabelsVisibility,
             onValueSelected = { navigationLabelsVisibility = it },
             icon = Icons.Outlined.Visibility,
-            valueText = { context.getString(it.resourceId) }
+            valueText = { context.resources.getString(it.resourceId) }
         )
 
         EnumValueSelectorSettingsEntry(
             title = stringResource(id = R.string.quick_picks_source),
             selectedValue = quickPicksSource,
             onValueSelected = { quickPicksSource = it },
-            icon = Icons.AutoMirrored.Outlined.List,
-            valueText = { context.getString(it.resourceId) }
+            icon = Icons.Outlined.List,
+            valueText = { context.resources.getString(it.resourceId) }
         )
 
         if (isAtLeastAndroid13) {

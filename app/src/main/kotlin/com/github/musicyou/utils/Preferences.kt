@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 
+const val amoledThemeKey = "amoledTheme"
 const val coilDiskCacheMaxSizeKey = "coilDiskCacheMaxSize"
 const val exoPlayerDiskCacheMaxSizeKey = "exoPlayerDiskCacheMaxSize"
 const val isInvincibilityEnabledKey = "isInvincibilityEnabled"

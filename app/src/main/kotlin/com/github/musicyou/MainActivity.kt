@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -52,9 +52,11 @@ import com.github.musicyou.ui.navigation.Navigation
 import com.github.musicyou.ui.navigation.Routes
 import com.github.musicyou.ui.screens.player.PlayerScaffold
 import com.github.musicyou.ui.styling.AppTheme
+import com.github.musicyou.utils.amoledThemeKey
 import com.github.musicyou.utils.asMediaItem
 import com.github.musicyou.utils.forcePlay
 import com.github.musicyou.utils.intent
+import com.github.musicyou.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -92,7 +94,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val scope = rememberCoroutineScope()
-            val playerState = rememberStandardBottomSheetState(
+            val playerState = rememberModalBottomSheetState(
                 initialValue = SheetValue.Hidden,
                 confirmValueChange = { value ->
                     if (value == SheetValue.Hidden) {
@@ -100,12 +102,14 @@ class MainActivity : ComponentActivity() {
                         binder?.player?.clearMediaItems()
                     }
 
-                    return@rememberStandardBottomSheetState true
+                    return@rememberModalBottomSheetState true
                 },
                 skipHiddenState = false
             )
 
-            AppTheme {
+            val amoledTheme by rememberPreference(amoledThemeKey, false)
+
+            AppTheme(amoled = amoledTheme) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CompositionLocalProvider(value = LocalPlayerServiceBinder provides binder) {
                         val menuState = LocalMenuState.current
@@ -162,14 +166,14 @@ class MainActivity : ComponentActivity() {
                     if (launchedFromNotification) {
                         intent.replaceExtras(Bundle())
                         scope.launch { playerState.expand() }
-                    } else scope.launch { playerState.partialExpand() }
+                    } else scope.launch { playerState.show() }
                 }
 
                 val listener = object : Player.Listener {
                     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null)
                             if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) scope.launch { playerState.expand() }
-                            else scope.launch { playerState.partialExpand() }
+                            else scope.launch { playerState.show() }
                     }
                 }
 

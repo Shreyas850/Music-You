@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val lightScheme = lightColorScheme(
@@ -86,49 +87,50 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-private val amoledScheme = darkColorScheme(
-    primary = primaryAmoled,
-    onPrimary = onPrimaryAmoled,
-    primaryContainer = primaryContainerAmoled,
-    onPrimaryContainer = onPrimaryContainerAmoled,
-    secondary = secondaryAmoled,
-    onSecondary = onSecondaryAmoled,
-    secondaryContainer = secondaryContainerAmoled,
-    onSecondaryContainer = onSecondaryContainerAmoled,
-    tertiary = tertiaryAmoled,
-    onTertiary = onTertiaryAmoled,
-    tertiaryContainer = tertiaryContainerAmoled,
-    onTertiaryContainer = onTertiaryContainerAmoled,
-    error = errorAmoled,
-    onError = onErrorAmoled,
-    errorContainer = errorContainerAmoled,
-    onErrorContainer = onErrorContainerAmoled,
-    background = backgroundAmoled,
-    onBackground = onBackgroundAmoled,
-    surface = surfaceAmoled,
-    onSurface = onSurfaceAmoled,
-    surfaceVariant = surfaceVariantAmoled,
-    onSurfaceVariant = onSurfaceVariantAmoled,
-    outline = outlineAmoled,
-    outlineVariant = outlineVariantAmoled,
-    scrim = scrimAmoled,
-    inverseSurface = inverseSurfaceAmoled,
-    inverseOnSurface = inverseOnSurfaceAmoled,
-    inversePrimary = inversePrimaryAmoled,
-    surfaceDim = surfaceDimAmoled,
-    surfaceBright = surfaceBrightAmoled,
-    surfaceContainerLowest = surfaceContainerLowestAmoled,
-    surfaceContainerLow = surfaceContainerLowAmoled,
-    surfaceContainer = surfaceContainerAmoled,
-    surfaceContainerHigh = surfaceContainerHighAmoled,
-    surfaceContainerHighest = surfaceContainerHighestAmoled,
+private val AmoledDarkColorScheme = darkColorScheme(
+    primary = Color.White,
+    onPrimary = Color.Black,
+    primaryContainer = Color.Black,
+    onPrimaryContainer = Color.White,
+    secondary = Color.White,
+    onSecondary = Color.Black,
+    secondaryContainer = Color.Black,
+    onSecondaryContainer = Color.White,
+    tertiary = Color.White,
+    onTertiary = Color.Black,
+    tertiaryContainer = Color.Black,
+    onTertiaryContainer = Color.White,
+    error = Color(0xFF942111),
+    onError = Color.White,
+    errorContainer = Color.Black,
+    onErrorContainer = Color.White,
+    background = Color.Black,
+    onBackground = Color.White,
+    surface = Color.Black,
+    onSurface = Color.White,
+    surfaceVariant = Color.Black,
+    onSurfaceVariant = Color.White,
+    surfaceTint = Color.Transparent,
+    outline = Color(0xFF494D4D),
+    outlineVariant = Color(0xFF494D4D),
+    scrim = Color.Black,
+    inverseSurface = Color.White,
+    inverseOnSurface = Color.Black,
+    inversePrimary = Color.Black,
+    surfaceDim = Color.Black,
+    surfaceBright = Color.Black,
+    surfaceContainerLowest = Color.Black,
+    surfaceContainerLow = Color.Black,
+    surfaceContainer = Color.Black,
+    surfaceContainerHigh = Color.Black,
+    surfaceContainerHighest = Color.Black,
 )
 
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    amoledTheme: Boolean = false,
+    amoled: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -136,7 +138,7 @@ fun AppTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        amoledTheme -> amoledScheme
+        darkTheme && amoled -> AmoledDarkColorScheme
         darkTheme -> darkScheme
         else -> lightScheme
     }
