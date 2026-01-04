@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val scope = rememberCoroutineScope()
             val playerState = rememberModalBottomSheetState(
-                initialValue = SheetValue.Hidden,
+                skipPartiallyExpanded = false,
                 confirmValueChange = { value ->
                     if (value == SheetValue.Hidden) {
                         binder?.stopRadio()
@@ -103,8 +103,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     return@rememberModalBottomSheetState true
-                },
-                skipHiddenState = false
+                }
             )
 
             val amoledTheme by rememberPreference(amoledThemeKey, false)
