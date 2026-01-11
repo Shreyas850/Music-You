@@ -14,15 +14,23 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -30,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -46,16 +55,21 @@ import com.github.innertube.Innertube
 import com.github.innertube.requests.playlistPage
 import com.github.innertube.requests.song
 import com.github.musicyou.models.LocalMenuState
+import com.github.musicyou.models.ReleaseInfo
 import com.github.musicyou.service.PlayerService
 import com.github.musicyou.ui.components.BottomNavigation
 import com.github.musicyou.ui.navigation.Navigation
 import com.github.musicyou.ui.navigation.Routes
 import com.github.musicyou.ui.screens.player.PlayerScaffold
 import com.github.musicyou.ui.styling.AppTheme
+import com.github.musicyou.ui.screens.settings.YouTubeAccount
+import com.github.musicyou.utils.UpdateChecker
 import com.github.musicyou.utils.amoledThemeKey
 import com.github.musicyou.utils.asMediaItem
 import com.github.musicyou.utils.forcePlay
 import com.github.musicyou.utils.intent
+import com.github.musicyou.utils.lastIgnoredUpdateVersionKey
+import com.github.musicyou.utils.lastSeenVersionCodeKey
 import com.github.musicyou.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
@@ -107,6 +121,27 @@ class MainActivity : ComponentActivity() {
             )
 
             val amoledTheme by rememberPreference(amoledThemeKey, false)
+            
+            var updateInfo by remember { mutableStateOf<ReleaseInfo?>(null) }
+            var whatsNewInfo by remember { mutableStateOf<ReleaseInfo?>(null) }
+            var lastIgnoredVersion by rememberPreference(lastIgnoredUpdateVersionKey, "")
+            var lastSeenVersionCode by rememberPreference(lastSeenVersionCodeKey, 0)
+
+            LaunchedEffect(Unit) {
+                val currentVersionCode = BuildConfig.VERSION_CODE
+                UpdateChecker.checkForUpdate()?.let { info ->
+                    if (currentVersionCode > lastSeenVersionCode) {
+                        whatsNewInfo = info
+                        lastSeenVersionCode = currentVersionCode
+                    } else if (info.isUpdateAvailable && info.latestVersion != lastIgnoredVersion) {
+                        updateInfo = info
+                    }
+                } ?: run {
+                    if (currentVersionCode > lastSeenVersionCode) {
+                        lastSeenVersionCode = currentVersionCode
+                    }
+                }
+            }
 
             AppTheme(amoled = amoledTheme) {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -153,6 +188,59 @@ class MainActivity : ComponentActivity() {
                                 menuState.content()
                             }
                         }
+                    }
+
+                    if (updateInfo != null) {
+                        AlertDialog(
+                            onDismissRequest = {
+                                lastIgnoredVersion = updateInfo?.latestVersion ?: ""
+                                updateInfo = null
+                            },
+                            title = { Text("New update available") },
+                            text = {
+                                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                                    Text("Version: ${updateInfo?.latestVersion}", style = MaterialTheme.typography.titleMedium)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(updateInfo?.changelog ?: "")
+                                }
+                            },
+                            confirmButton = {
+                                TextButton(onClick = {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Shreyas850/Music-You/releases/latest"))
+                                    startActivity(intent)
+                                    updateInfo = null
+                                }) {
+                                    Text("View on GitHub")
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = {
+                                    lastIgnoredVersion = updateInfo?.latestVersion ?: ""
+                                    updateInfo = null
+                                }) {
+                                    Text("Ignore")
+                                }
+                            }
+                        )
+                    }
+
+                    if (whatsNewInfo != null) {
+                        AlertDialog(
+                            onDismissRequest = { whatsNewInfo = null },
+                            title = { Text("What's new") },
+                            text = {
+                                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                                    Text("Version: ${whatsNewInfo?.latestVersion}", style = MaterialTheme.typography.titleMedium)
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(whatsNewInfo?.changelog ?: "")
+                                }
+                            },
+                            confirmButton = {
+                                TextButton(onClick = { whatsNewInfo = null }) {
+                                    Text("Dismiss")
+                                }
+                            }
+                        )
                     }
                 }
             }

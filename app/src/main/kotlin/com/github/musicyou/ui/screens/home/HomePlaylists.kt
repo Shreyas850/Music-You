@@ -13,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +38,7 @@ import com.github.musicyou.ui.components.SortingHeader
 import com.github.musicyou.ui.components.TextFieldDialog
 import com.github.musicyou.ui.items.BuiltInPlaylistItem
 import com.github.musicyou.ui.items.LocalPlaylistItem
+import com.github.musicyou.utils.PlaylistImportParser
 import com.github.musicyou.utils.playlistSortByKey
 import com.github.musicyou.utils.playlistSortOrderKey
 import com.github.musicyou.utils.rememberPreference
@@ -53,6 +56,8 @@ fun HomePlaylists(
     val playerPadding = LocalPlayerPadding.current
 
     var isCreatingANewPlaylist by rememberSaveable { mutableStateOf(false) }
+    var isImportingAPlaylist by rememberSaveable { mutableStateOf(false) }
+
     var sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.Name)
     var sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Ascending)
 
@@ -78,6 +83,41 @@ fun HomePlaylists(
                 }
             }
         )
+    }
+
+    if (isImportingAPlaylist) {
+        TextFieldDialog(
+            title = "Import playlist",
+            hintText = "Paste YouTube or Spotify URL",
+            onDismiss = {
+                if (!viewModel.isImporting) {
+                    isImportingAPlaylist = false
+                    viewModel.importError = null
+                }
+            },
+            onDone = { url ->
+                val result = PlaylistImportParser.parse(url)
+                if (result.platform != PlaylistImportParser.Platform.Unknown && result.playlistId != null) {
+                    if (result.platform == PlaylistImportParser.Platform.Spotify) {
+                        viewModel.importError = "Spotify import not yet supported"
+                    } else {
+                        viewModel.importPlaylist(result.playlistId)
+                    }
+                } else {
+                    viewModel.importError = "Invalid playlist URL"
+                }
+            },
+            isError = viewModel.importError != null,
+            errorText = viewModel.importError,
+            doneText = if (viewModel.isImporting) "Importing..." else "Import"
+        )
+    }
+
+    // Automatically close dialog on successful import
+    LaunchedEffect(viewModel.isImporting) {
+        if (!viewModel.isImporting && viewModel.importError == null) {
+            isImportingAPlaylist = false
+        }
     }
 
     HomeScaffold(
@@ -131,6 +171,14 @@ fun HomePlaylists(
                     icon = Icons.Default.Add,
                     name = stringResource(id = R.string.new_playlist),
                     onClick = { isCreatingANewPlaylist = true }
+                )
+            }
+
+            item(key = "import") {
+                BuiltInPlaylistItem(
+                    icon = Icons.Default.Link,
+                    name = "Import playlist",
+                    onClick = { isImportingAPlaylist = true }
                 )
             }
 

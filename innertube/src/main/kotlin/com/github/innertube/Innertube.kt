@@ -37,11 +37,16 @@ object Innertube {
                 contentType(ContentType.Application.Json)
                 headers.append("X-Goog-Api-Key", "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8")
                 parameters.append("prettyPrint", "false")
+                
+                token?.let {
+                    header("Authorization", "Bearer $it")
+                }
             }
         }
     }
 
     var visitorData: String? = null
+    var token: String? = null
 
     internal const val BROWSE = "/youtubei/v1/browse"
     internal const val NEXT = "/youtubei/v1/next"

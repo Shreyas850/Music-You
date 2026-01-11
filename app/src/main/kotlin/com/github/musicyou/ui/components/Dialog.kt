@@ -10,6 +10,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -44,7 +45,9 @@ fun TextFieldDialog(
     singleLine: Boolean = true,
     maxLines: Int = 1,
     onCancel: () -> Unit = onDismiss,
-    isTextInputValid: (String) -> Boolean = { it.isNotEmpty() }
+    isTextInputValid: (String) -> Boolean = { it.isNotEmpty() },
+    isError: Boolean = false,
+    errorText: String? = null
 ) {
     val focusRequester = remember {
         FocusRequester()
@@ -65,7 +68,6 @@ fun TextFieldDialog(
             TextButton(
                 onClick = {
                     if (isTextInputValid(textFieldValue.text)) {
-                        onDismiss()
                         onDone(textFieldValue.text)
                     }
                 }
@@ -83,25 +85,30 @@ fun TextFieldDialog(
             Text(text = title)
         },
         text = {
-            OutlinedTextField(
-                value = textFieldValue,
-                onValueChange = { textFieldValue = it },
-                singleLine = singleLine,
-                maxLines = maxLines,
-                placeholder = {
-                    Text(text = hintText)
-                },
-                keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        if (isTextInputValid(textFieldValue.text)) {
-                            onDismiss()
-                            onDone(textFieldValue.text)
+            Column {
+                OutlinedTextField(
+                    value = textFieldValue,
+                    onValueChange = { textFieldValue = it },
+                    singleLine = singleLine,
+                    maxLines = maxLines,
+                    placeholder = {
+                        Text(text = hintText)
+                    },
+                    isError = isError,
+                    supportingText = if (isError && errorText != null) {
+                        { Text(text = errorText) }
+                    } else null,
+                    keyboardOptions = KeyboardOptions(imeAction = if (singleLine) ImeAction.Done else ImeAction.None),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (isTextInputValid(textFieldValue.text)) {
+                                onDone(textFieldValue.text)
+                            }
                         }
-                    }
-                ),
-                modifier = Modifier.focusRequester(focusRequester)
-            )
+                    ),
+                    modifier = Modifier.focusRequester(focusRequester)
+                )
+            }
         }
     )
 

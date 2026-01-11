@@ -39,6 +39,11 @@ const val navigationLabelsVisibilityKey = "navigationLabelsVisibility"
 const val listGesturesEnabledKey = "listGesturesEnabled"
 const val playerGesturesEnabledKey = "songGesturesEnabled"
 const val miniplayerGesturesEnabledKey = "miniplayerGesturesEnabled"
+const val lastIgnoredUpdateVersionKey = "lastIgnoredUpdateVersion"
+const val lastSeenVersionCodeKey = "lastSeenVersionCode"
+const val youtubeAccessTokenKey = "youtubeAccessToken"
+const val youtubeUserEmailKey = "youtubeUserEmail"
+const val youtubeUserNameKey = "youtubeUserName"
 
 inline fun <reified T : Enum<T>> SharedPreferences.getEnum(
     key: String,

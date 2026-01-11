@@ -23,8 +23,8 @@ android {
         applicationId = "com.github.musicyou"
         minSdk = 23
         targetSdk = 36
-        versionCode = 14
-        versionName = "1.0.2"
+        versionCode = 15
+        versionName = "1.0.3"
     }
 
     splits {
@@ -55,6 +55,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -89,6 +90,16 @@ dependencies {
     implementation(libs.swipe)
     implementation(libs.material)
     ksp(libs.room.compiler)
+    
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.json)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.playauth)
+    implementation(libs.googleid)
+
     implementation(projects.github)
     implementation(projects.innertube)
     implementation(projects.kugou)

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -82,6 +83,10 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .padding(bottom = playerPadding)
         ) {
+            YouTubeAccount()
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
             SettingsSection.entries.forEachIndexed { index, section ->
                 ListItem(
                     headlineContent = {
