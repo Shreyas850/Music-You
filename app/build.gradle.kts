@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.playauth)
     implementation(libs.googleid)
+    implementation(libs.security.crypto)
 
     implementation(projects.github)
     implementation(projects.innertube)

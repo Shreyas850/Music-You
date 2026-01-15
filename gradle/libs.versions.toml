@@ -22,6 +22,7 @@ room = "2.8.2"
 swipe = "1.3.0"
 credentials = "1.5.0-rc01"
 googleid = "1.1.1"
+security-crypto = "1.1.0"
 
 [libraries]
 brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
@@ -56,6 +57,7 @@ swipe = { group = "me.saket.swipe", name = "swipe", version.ref = "swipe" }
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 androidx-credentials-playauth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

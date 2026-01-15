@@ -135,7 +135,7 @@ import android.os.Binder as AndroidBinder
 class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListener.Callback,
     SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var mediaSession: MediaSession
-    private lateinit var cache: SimpleCache
+    private lateinit var cache: Cache
     private lateinit var player: ExoPlayer
 
     private val stateBuilder
@@ -236,29 +236,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         isShowingThumbnailInLockscreen =
             preferences.getBoolean(isShowingThumbnailInLockscreenKey, false)
 
-        val cacheEvictor = when (val size =
-            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB`)) {
-            ExoPlayerDiskCacheMaxSize.Unlimited -> NoOpCacheEvictor()
-            else -> LeastRecentlyUsedCacheEvictor(size.bytes)
-        }
-
-        // TODO: Remove in a future release
-        val directory = cacheDir.resolve("exoplayer").also { directory ->
-            if (directory.exists()) return@also
-
-            directory.mkdir()
-
-            cacheDir.listFiles()?.forEach { file ->
-                if (file.isDirectory && file.name.length == 1 && file.name.isDigitsOnly() || file.extension == "uid") {
-                    if (!file.renameTo(directory.resolve(file.name))) {
-                        file.deleteRecursively()
-                    }
-                }
-            }
-
-            filesDir.resolve("coil").deleteRecursively()
-        }
-        cache = SimpleCache(directory, cacheEvictor, StandaloneDatabaseProvider(this))
+        cache = DownloadUtil.getCache(this)
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
             .setHandleAudioBecomingNoisy(true)
@@ -335,7 +313,6 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
         mediaSession.isActive = false
         mediaSession.release()
-        cache.release()
 
         loudnessEnhancer?.release()
 
@@ -802,12 +779,8 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
     private fun createCacheDataSource(): DataSource.Factory {
         return CacheDataSource.Factory().setCache(cache).apply {
-            setUpstreamDataSourceFactory(
-                DefaultHttpDataSource.Factory()
-                    .setConnectTimeoutMs(16000)
-                    .setReadTimeoutMs(8000)
-                    .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
-            )
+            setUpstreamDataSourceFactory(DownloadUtil.getHttpDataSourceFactory())
+            setCacheWriteDataSinkFactory(null) // Disable writing back to cache if it's already there or we're just reading
         }
     }
 

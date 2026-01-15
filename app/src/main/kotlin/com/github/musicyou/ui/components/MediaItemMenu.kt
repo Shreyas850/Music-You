@@ -21,6 +21,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.DownloadDone
+import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlaylistRemove
@@ -50,7 +53,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.offline.Download
+import com.github.innertube.Innertube
 import com.github.innertube.models.NavigationEndpoint
+import com.github.innertube.requests.player
 import com.github.musicyou.Database
 import com.github.musicyou.LocalPlayerServiceBinder
 import com.github.musicyou.R
@@ -61,6 +67,7 @@ import com.github.musicyou.models.Playlist
 import com.github.musicyou.models.Song
 import com.github.musicyou.models.SongPlaylistMap
 import com.github.musicyou.query
+import com.github.musicyou.service.MusicDownloadManager
 import com.github.musicyou.transaction
 import com.github.musicyou.ui.items.MediaSongItem
 import com.github.musicyou.utils.addNext
@@ -71,6 +78,7 @@ import com.github.musicyou.utils.playlistSortByKey
 import com.github.musicyou.utils.playlistSortOrderKey
 import com.github.musicyou.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -257,6 +265,7 @@ fun BaseMediaItemMenu(
     }
 }
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @ExperimentalAnimationApi
 @Composable
 fun MediaItemMenu(
@@ -276,6 +285,10 @@ fun MediaItemMenu(
     onShare: () -> Unit
 ) {
     val density = LocalDensity.current
+    val context = LocalContext.current
+    val downloadManager = remember { MusicDownloadManager.getInstance(context) }
+    val downloads by downloadManager.downloads.collectAsState()
+    val download = downloads[mediaItem.mediaId]
 
     var isViewingPlaylists by remember {
         mutableStateOf(false)
@@ -481,6 +494,46 @@ fun MediaItemMenu(
                         }
                     )
                 }
+
+                MenuEntry(
+                    icon = when (download?.state) {
+                        Download.STATE_COMPLETED -> Icons.Outlined.DownloadDone
+                        Download.STATE_DOWNLOADING, Download.STATE_RESTARTING -> Icons.Outlined.Downloading
+                        else -> Icons.Outlined.Download
+                    },
+                    text = when (download?.state) {
+                        Download.STATE_COMPLETED -> stringResource(R.string.remove_download)
+                        Download.STATE_DOWNLOADING -> stringResource(
+                            R.string.downloading,
+                            (download.percentDownloaded).toInt().coerceAtLeast(0)
+                        )
+
+                        Download.STATE_QUEUED -> stringResource(R.string.queued)
+                        else -> stringResource(R.string.download)
+                    },
+                    onClick = {
+                        if (download?.state == Download.STATE_COMPLETED) {
+                            downloadManager.remove(mediaItem.mediaId)
+                        } else if (download == null || download.state == Download.STATE_FAILED) {
+                            query {
+                                val song = Song(
+                                    id = mediaItem.mediaId,
+                                    title = mediaItem.mediaMetadata.title!!.toString(),
+                                    artistsText = mediaItem.mediaMetadata.artist?.toString(),
+                                    durationText = mediaItem.mediaMetadata.extras?.getString("durationText"),
+                                    thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString()
+                                )
+                                Database.insert(mediaItem)
+                                runBlocking {
+                                    Innertube.player(videoId = mediaItem.mediaId)?.getOrNull()
+                                        ?.streamingData?.highestQualityFormat?.url?.let { url ->
+                                            downloadManager.download(song, url)
+                                        }
+                                }
+                            }
+                        }
+                    }
+                )
 
                 if (onAddToPlaylist != null) {
                     MenuEntry(
