@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.github.musicyou.Database
 import com.github.musicyou.LocalPlayerPadding
 import com.github.musicyou.R
+import com.github.musicyou.dbPath
 import com.github.musicyou.internal
-import com.github.musicyou.path
 import com.github.musicyou.query
 import com.github.musicyou.service.PlayerService
 import com.github.musicyou.ui.styling.Dimensions
@@ -73,8 +73,10 @@ fun DatabaseSettings() {
 
                 context.applicationContext.contentResolver.openOutputStream(uri)
                     ?.use { outputStream ->
-                        FileInputStream(internal.path).use { inputStream ->
-                            inputStream.copyTo(outputStream)
+                        internal.dbPath?.let { path ->
+                            FileInputStream(path).use { inputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
                         }
                     }
             }
@@ -90,8 +92,10 @@ fun DatabaseSettings() {
 
                 context.applicationContext.contentResolver.openInputStream(uri)
                     ?.use { inputStream ->
-                        FileOutputStream(internal.path).use { outputStream ->
-                            inputStream.copyTo(outputStream)
+                        internal.dbPath?.let { path ->
+                            FileOutputStream(path).use { outputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
                         }
                     }
 

@@ -1,17 +1,19 @@
+import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
 }
 
-kotlin {
+// Built-in Kotlin configuration for AGP 9.0+
+configure<KotlinAndroidProjectExtension> {
     compilerOptions {
-        jvmTarget = JvmTarget.fromTarget("17")
-        freeCompilerArgs.addAll("-Xcontext-receivers")
+        jvmTarget.set(JvmTarget.JVM_17)
+        freeCompilerArgs.addAll("-Xcontext-parameters")
     }
 }
 
@@ -49,8 +51,10 @@ android {
         }
     }
 
-    sourceSets.all {
-        kotlin.srcDir("src/$name/kotlin")
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/kotlin")
+        }
     }
 
     buildFeatures {
@@ -90,15 +94,12 @@ dependencies {
     implementation(libs.swipe)
     implementation(libs.material)
     ksp(libs.room.compiler)
-    
+
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.json)
 
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.playauth)
-    implementation(libs.googleid)
     implementation(libs.security.crypto)
 
     implementation(projects.github)

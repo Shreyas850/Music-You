@@ -26,7 +26,7 @@ fun Density.calculateDistanceToDesiredSnapPosition(
 private val LazyGridLayoutInfo.singleAxisViewportSize: Int
     get() = if (orientation == Orientation.Vertical) viewportSize.height else viewportSize.width
 
-context(Density)
+context(density: Density)
 @ExperimentalFoundationApi
 fun SnapLayoutInfoProvider(
     lazyGridState: LazyGridState,
@@ -46,7 +46,7 @@ fun SnapLayoutInfoProvider(
 
         layoutInfo.visibleItemsInfo.fastForEach { item ->
             val offset =
-                calculateDistanceToDesiredSnapPosition(layoutInfo, item, positionInLayout)
+                density.calculateDistanceToDesiredSnapPosition(layoutInfo, item, positionInLayout)
 
             // Find item that is closest to the center
             if (offset <= 0 && offset > lowerBoundOffset) lowerBoundOffset = offset

@@ -83,10 +83,6 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .padding(bottom = playerPadding)
         ) {
-            YouTubeAccount()
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
             SettingsSection.entries.forEachIndexed { index, section ->
                 ListItem(
                     headlineContent = {

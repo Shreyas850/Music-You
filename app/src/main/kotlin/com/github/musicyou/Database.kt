@@ -508,11 +508,11 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
     companion object {
         lateinit var Instance: DatabaseInitializer
 
-        context(Context)
+        context(context: Context)
         operator fun invoke() {
             if (!::Instance.isInitialized) {
                 Instance = Room
-                    .databaseBuilder(this@Context, DatabaseInitializer::class.java, "data.db")
+                    .databaseBuilder(context, DatabaseInitializer::class.java, "data.db")
                     .addMigrations(
                         From8To9Migration(),
                         From10To11Migration(),
@@ -710,5 +710,6 @@ fun transaction(block: () -> Unit) = with(DatabaseInitializer.Instance) {
     }
 }
 
-val RoomDatabase.path: String?
+val RoomDatabase.dbPath: String?
+    @androidx.annotation.OptIn(androidx.room.ExperimentalRoomApi::class)
     get() = openHelper.writableDatabase.path

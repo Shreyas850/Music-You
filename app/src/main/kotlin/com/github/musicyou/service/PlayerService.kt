@@ -1031,12 +1031,12 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
     @JvmInline
     private value class Action(val value: String) {
-        context(Context)
+        context(context: Context)
         val pendingIntent: PendingIntent
             get() = PendingIntent.getBroadcast(
-                this@Context,
+                context,
                 100,
-                Intent(value).setPackage(packageName),
+                Intent(value).setPackage(context.packageName),
                 PendingIntent.FLAG_UPDATE_CURRENT.or(if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0)
             )
 

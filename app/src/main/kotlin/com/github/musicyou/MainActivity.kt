@@ -12,7 +12,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -62,7 +61,6 @@ import com.github.musicyou.ui.navigation.Navigation
 import com.github.musicyou.ui.navigation.Routes
 import com.github.musicyou.ui.screens.player.PlayerScaffold
 import com.github.musicyou.ui.styling.AppTheme
-import com.github.musicyou.ui.screens.settings.YouTubeAccount
 import com.github.musicyou.utils.UpdateChecker
 import com.github.musicyou.utils.amoledThemeKey
 import com.github.musicyou.utils.asMediaItem

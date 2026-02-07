@@ -68,9 +68,11 @@ import com.github.musicyou.ui.items.LocalSongItem
 import com.github.musicyou.ui.items.PlaylistItem
 import com.github.musicyou.ui.items.SongItem
 import com.github.musicyou.ui.styling.Dimensions
+import com.github.musicyou.utils.FirebaseAuthProvider
 import com.github.musicyou.utils.SnapLayoutInfoProvider
 import com.github.musicyou.utils.asMediaItem
 import com.github.musicyou.utils.forcePlay
+import com.github.musicyou.utils.getGreeting
 import com.github.musicyou.utils.isLandscape
 import com.github.musicyou.utils.quickPicksSourceKey
 import com.github.musicyou.utils.rememberPreference
@@ -137,6 +139,21 @@ fun QuickPicks(
                     .verticalScroll(rememberScrollState())
                     .padding(top = 4.dp, bottom = 16.dp + playerPadding)
             ) {
+                val user = FirebaseAuthProvider.getCurrentUser()
+                val greeting = if (user != null) {
+                    "${getGreeting()}, ${user.displayName?.split(" ")?.firstOrNull() ?: ""}"
+                } else {
+                    getGreeting()
+                }
+
+                Text(
+                    text = greeting,
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 8.dp, bottom = 16.dp)
+                )
+
                 viewModel.relatedPageResult?.getOrNull()?.let { related ->
                     Text(
                         text = stringResource(id = R.string.quick_picks),
