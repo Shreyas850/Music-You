@@ -1,0 +1,12 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:icon="@drawable/search"
+        android:shortcutId="search"
+        android:shortcutShortLabel="@string/search">
+
+        <intent
+            android:action="com.github.musicyou.action.search"
+            android:targetClass="com.github.musicyou.MainActivity"
+            android:targetPackage="com.github.musicyou" />
+    </shortcut>
+</shortcuts>
